@@ -1,5 +1,7 @@
 package com.example.flunetwork.ui;
 
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,7 +32,9 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
@@ -51,6 +55,8 @@ import android.widget.Toast;
 
 public class AddEventActivity extends Activity implements OnClickListener{
 
+	private static final int SELECT_PICTURE = 1;
+	
 	CustomDateTimePicker custom;
 	Event newEvent;
 	Bitmap bmp;
@@ -66,6 +72,7 @@ public class AddEventActivity extends Activity implements OnClickListener{
 	String eventLocationString;
 	String eventTimeString;
 	String eventDescriptionString; 
+	String selectedImagePath;
 	double eventLat = 0;
 	double eventLong = 0;
 
@@ -365,45 +372,65 @@ public class AddEventActivity extends Activity implements OnClickListener{
 
 	private void openGallery()
 	{
-		Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
-		photoPickerIntent.setType("image/*");
-		startActivityForResult(photoPickerIntent, 1);
+		Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,
+                "Select Picture"), SELECT_PICTURE);
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultcode, Intent intent)
+	protected void onActivityResult(int requestCode, int resultcode, Intent data)
 	{
-		super.onActivityResult(requestCode, resultcode, intent);
+		super.onActivityResult(requestCode, resultcode, data);
+		
+		 if (resultcode == RESULT_OK) {
+		        if (requestCode == SELECT_PICTURE) {
+		            Uri selectedImageUri = data.getData();
+		            if (Build.VERSION.SDK_INT < 19) {
+		                selectedImagePath = getPath(selectedImageUri);
+		                Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath);
+		                eventImageView.setImageBitmap(bitmap);
 
-		if (requestCode == 1) 
-		{
-			if (intent != null && resultcode == RESULT_OK) 
-			{              
+		            }
+		            else {
+		                ParcelFileDescriptor parcelFileDescriptor;
+		                try {
+		                    parcelFileDescriptor = getContentResolver().openFileDescriptor(selectedImageUri, "r");
+		                    FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+		                    Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+		                    parcelFileDescriptor.close();
+		                    eventImageView.setImageBitmap(image);
 
-				Uri selectedImage = intent.getData();
-
-				String[] filePathColumn = {MediaStore.Images.Media.DATA};
-				Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-				cursor.moveToFirst();
-				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-				String filePath = cursor.getString(columnIndex);
-				cursor.close();
-
-				if(bmp != null && !bmp.isRecycled())
-				{
-					bmp = null;                
-				}
-
-				bmp = BitmapFactory.decodeFile(filePath);
-				eventImageView.setBackgroundResource(0);
-				eventImageView.setImageBitmap(bmp);              
-			}
-			else 
-			{
-				Log.d("Status:", "Photopicker canceled");            
-			}
+		                } catch (FileNotFoundException e) {
+		                    e.printStackTrace();
+		                } catch (IOException e) {
+		                    // TODO Auto-generated catch block
+		                    e.printStackTrace();
+		                }
+		            }
+		        }
+		    }
 		}
-	}
+
+		/**
+		 * helper to retrieve the path of an image URI
+		 */
+		public String getPath(Uri uri) {
+		        if( uri == null ) {
+		            return null;
+		        }
+		        String[] projection = { MediaStore.Images.Media.DATA };
+		        Cursor cursor = managedQuery(uri, projection, null, null, null);
+		        if( cursor != null ){
+		            int column_index = cursor
+		            .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+		            cursor.moveToFirst();
+		            return cursor.getString(column_index);
+		        }
+		        return uri.getPath();
+		}
+		
 }
 
 
