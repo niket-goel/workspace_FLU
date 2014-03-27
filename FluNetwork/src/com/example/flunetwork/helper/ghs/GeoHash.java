@@ -2,7 +2,7 @@
  * Copyright 2010, Silvio Heuberger @ IFS www.ifs.hsr.ch
  *
  * This code is release under the LGPL license.
- * Adapted Code
+ * Code is adapted from the owner.
  */
 package com.example.flunetwork.helper.ghs;
 
