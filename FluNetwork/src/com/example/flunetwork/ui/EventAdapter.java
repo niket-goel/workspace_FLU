@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.entity.eventendpoint.model.Event;
 import com.example.flunetwork.R;
+import com.example.flunetwork.R.drawable;
+import com.google.android.gms.internal.ct;
 
 
 public class EventAdapter extends ArrayAdapter<Event> {
@@ -36,35 +41,63 @@ public class EventAdapter extends ArrayAdapter<Event> {
 	           TextView eventNameView = (TextView) convertView.findViewById(R.id.eventName);
 	           TextView eventLocationView = (TextView) convertView.findViewById(R.id.eventLocation);
 	           TextView eventTimeView = (TextView) convertView.findViewById(R.id.eventTime);
+	           TextView eventDateView = (TextView) convertView.findViewById(R.id.eventDate);
 	           TextView eventDescriptionView = (TextView) convertView.findViewById(R.id.eventDescriptionView);
+	           LinearLayout rootLayout = (LinearLayout) convertView.findViewById(R.id.eventListItemLayout);
 	           //Event eventId = myEvents.get(position); TODO
-	           
+	           //TODO assign the actual image here
+	           Drawable bgImage = context.getResources().getDrawable(R.drawable.default_list_image);
+	           bgImage.setAlpha(30);
+	           rootLayout.setBackground(bgImage);
+	           //rootLayout.setAlpha(0.2f);
 	           // TODO Perform NULL checks
-	           if(EventList.get(position).getEventName() != null)
+	           if(EventList.get(position).getEventName() != null && !EventList.get(position).getEventName().isEmpty())
 	        	   eventNameView.setText(EventList.get(position).getEventName().toString());
+	           else
+	        	   eventNameView.setText("I don't think they named it.");
 	           //TODO Change this to show the location string 
-	           //if(EventList.get(position).getEventLocation() != null)
-	        	   eventLocationView.setText(EventList.get(position).getEventLat().toString()+", "+ EventList.get(position).getEventLong().toString());
+	           if(EventList.get(position).getEventLocation() != null && !EventList.get(position).getEventLocation().isEmpty())
+	        	   eventLocationView.setText(EventList.get(position).getEventLocation().toString());
+	           else
+	           {
+	        	   //eventDescriptionView.setTextSize(20.0f);
+	        	   eventLocationView.setText("Oops! We don't remember where!");
+	           }
+	           
 	           if(EventList.get(position).getEventTime() != null)
-	        	   eventTimeView.setText(EventList.get(position).getEventTime().toString());
+	           {
+	        	   eventTimeView.setText(getTimeString(EventList.get(position).getEventTime().toString()));
+	        	   eventDateView.setText(getDateString(EventList.get(position).getEventTime().toString()));
+	           }
+	           else
+	           {
+	        	   
+	        	   eventTimeView.setText("Dunno when!");
+	        	   eventDateView.setText(null);
+	           }
+	        	
 	           if(EventList.get(position).getEventDescription() != null)
 	        	   eventDescriptionView.setText(EventList.get(position).getEventDescription().toString());
+	           else
+	        	   eventTimeView.setText("That's all we heard about the event!!!");
 	       return convertView;
 	   }
 	   
-		public ArrayList<Event> getList()
-		{
-			ArrayList<Event> EventList = null;
-			for(int i=1;i<9;i++)
-			{
-				//TODO
-				/*Event event= new Event();
-				event.setEventLocation(new FluLocation(0,0))= "location " + i;
-				event.eventName = "Event number " + i;
-				event.eventTime = "Time "+ i;
-				
-				EventList.add(event);*/
-			}
-			return EventList;
-		}
+	   String getDateString(String dateTime)
+	   {
+		   String dateString = null;
+		   String[] parts = dateTime.split("T");
+		   dateString = parts[0];
+		   return dateString;
+	   }
+	   
+	   String getTimeString(String dateTime)
+	   {
+		   String timeString = null;
+		   String[] parts = dateTime.split("T");
+		   parts = parts[1].split(".");
+		   timeString = parts[0]+" hrs";
+		   return timeString;
+	   }
+	   
 }

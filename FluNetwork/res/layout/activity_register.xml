@@ -2,11 +2,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-
     android:gravity="top|center_horizontal"
     android:orientation="vertical" 
     android:background="@drawable/ic_flu_image">
     	
+     <ProgressBar
+            android:id="@+id/regprogressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone" >
+        </ProgressBar>
+    
   <Button
       android:id="@+id/regButton"
       android:layout_width="fill_parent"

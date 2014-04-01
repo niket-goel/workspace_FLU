@@ -37,5 +37,6 @@
     <string name="goToMaps">Get Directions</string>
     <string name="dateTimePicker">Set Date and Time</string>
     <string name="title_activity_event_detail">EventDetailActivity</string>
+    <string name="exit_press_back_twice_message">Press back again to exit</string>
 
 </resources>

@@ -17,4 +17,6 @@ public class MyGlobal {
 	
 	//Constants
 	public static final double IMPOSSIBLE_LOCATION = 9999.9;
+	// Time between two back button pushes to push app to background in ms
+	public static final double TIME_DIFF = 2000; 
 }

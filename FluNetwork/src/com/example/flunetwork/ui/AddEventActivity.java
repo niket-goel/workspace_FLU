@@ -265,6 +265,12 @@ public class AddEventActivity extends Activity implements OnClickListener{
 
 			return null;
 		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			finish();
+		}
 	}
 
 	// And the corresponding Adapter
@@ -306,6 +312,7 @@ public class AddEventActivity extends Activity implements OnClickListener{
 					locationSuggestion.append(", ");
 				}
 			}
+			newEvent.setEventLocation(locationSuggestion.toString());
 			return locationSuggestion.toString();
 		}
 
@@ -416,6 +423,7 @@ public class AddEventActivity extends Activity implements OnClickListener{
 		/**
 		 * helper to retrieve the path of an image URI
 		 */
+		@SuppressWarnings("deprecation")
 		public String getPath(Uri uri) {
 		        if( uri == null ) {
 		            return null;

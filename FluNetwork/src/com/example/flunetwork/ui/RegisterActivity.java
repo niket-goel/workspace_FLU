@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class RegisterActivity extends Activity implements OnClickListener{
@@ -27,7 +28,7 @@ public class RegisterActivity extends Activity implements OnClickListener{
 	Button registerBtn;
 	double latitude;
 	double longitude;
-	
+	ProgressBar bar;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,6 +36,7 @@ public class RegisterActivity extends Activity implements OnClickListener{
 		registerBtn = (Button)findViewById(R.id.regButton); 
 		registerBtn.setOnClickListener(this);
 		MyGlobal.currentLoc = new GPSTracker(this);	
+		bar = (ProgressBar) this.findViewById(R.id.regprogressBar);
 		
 	}
 	
@@ -59,8 +61,9 @@ public class RegisterActivity extends Activity implements OnClickListener{
 		}
 		else
 		{
+			registerBtn.setVisibility(Button.INVISIBLE);
 			//TODO navigate to landing activity
-			startActivity(new Intent(this,EventDetailActivity.class));
+			startActivity(new Intent(this,LandingActivity.class));
 		}
 	}
 
@@ -86,14 +89,21 @@ public class RegisterActivity extends Activity implements OnClickListener{
 	   */
 	  private class CreateUserTask extends AsyncTask<Void, Void, Void> {
 
-	    /**
+		  @Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			registerBtn.setVisibility(View.INVISIBLE);
+			bar.setVisibility(View.VISIBLE);
+		}
+		  
+		  /**
 	     * Calls appropriate CloudEndpoint to indicate that user checked into a place.
 	     *
 	     * @param params the place where the user is checking in.
 	     */
-		  
 		@Override
 	    protected Void doInBackground(Void... params) {
+		
 	      User newUser = new User();
 	      newUser.setUserName("Niket");
 	      newUser.setPhoneNumber(new PhoneNumber().setNumber("1234567890"));
@@ -123,22 +133,17 @@ public class RegisterActivity extends Activity implements OnClickListener{
 		protected void onPostExecute(Void result) {
 				// TODO Put some kind of progress bar
 			super.onPostExecute(result);
-			/*if(result != null)
-			{*/
 				if(MyGlobal.currentUser != null)
 				{
-					//TODO navigate to landing activity
+					//bar.setVisibility(View.GONE);
 					startActivity(new Intent(getApplicationContext(),LandingActivity.class));
 				}
 				else
 				{
+					bar.setVisibility(View.GONE);
+					registerBtn.setVisibility(View.VISIBLE);
 					Toast.makeText(getApplicationContext(), "Could not contact server", Toast.LENGTH_SHORT).show();
 				}
-			/*}
-			else
-			{
-				Toast.makeText(getApplicationContext(), "Could not contact server", Toast.LENGTH_SHORT).show();
-			}*/
         }
 	  }
 }

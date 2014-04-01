@@ -19,7 +19,7 @@
         	android:orientation="horizontal">
                   
         <TextView
-            android:id="@+id/oneEventDate"
+            android:id="@+id/eventDateTextView"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
@@ -33,7 +33,7 @@
         
         
           <TextView
-            android:id="@+id/oneEventTime"
+            android:id="@+id/eventTimeTextView"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
@@ -47,7 +47,7 @@
         </LinearLayout>
         
         <TextView
-            android:id="@+id/oneEventName"
+            android:id="@+id/eventNameTextView"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
@@ -59,7 +59,7 @@
             android:background="#80000000"/>
         
         <TextView
-            android:id="@+id/oneEventLocation"
+            android:id="@+id/eventLocationTextView"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
@@ -72,7 +72,7 @@
 
 
         <TextView
-            android:id="@+id/oneEventDescription"
+            android:id="@+id/eventDescriptionTextView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="left"

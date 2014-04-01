@@ -2,6 +2,8 @@ package com.example.flunetwork.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,6 +17,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -26,11 +29,18 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 public class EventDetailActivity extends FragmentActivity{
 
 	GoogleMap map;
-	Event currentEvent;
+	Event eventToDisplay;
+	
+	TextView eventDateTxtVw;
+	TextView eventTimeTxtVw;
+	TextView eventNameTxtVw;
+	TextView eventLocationTxtVw;
+	TextView eventDecriptionTxtVw;
 	
 	
 	@Override
@@ -40,11 +50,17 @@ public class EventDetailActivity extends FragmentActivity{
 		
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapDisplayLoc)).getMap();
 		
-		currentEvent = new Event();
-		currentEvent.setEventDescription("This is a default description");
-		currentEvent.setEventLat(29.6433692 + .01);
-		currentEvent.setEventLong(-82.3474775);
-		currentEvent.setEventName("Awesome Event");
+		eventToDisplay = MyGlobal.currentEvent;
+		/*eventToDisplay.setEventDescription("This is a default description");
+		eventToDisplay.setEventLat(29.6433692 + .01);
+		eventToDisplay.setEventLong(-82.3474775);
+		eventToDisplay.setEventName("Awesome Event");*/
+		
+		eventDateTxtVw = (TextView)findViewById(R.id.eventDateTextView);
+		eventTimeTxtVw = (TextView)findViewById(R.id.eventTimeTextView);
+		eventNameTxtVw = (TextView)findViewById(R.id.eventNameTextView);
+		eventLocationTxtVw = (TextView)findViewById(R.id.eventLocationTextView);
+		eventDecriptionTxtVw = (TextView)findViewById(R.id.eventDescriptionTextView);
 		
 		//currentEvent.setEventTime(new Date());
 		
@@ -53,7 +69,12 @@ public class EventDetailActivity extends FragmentActivity{
 	@Override
 	protected void onResume() {
 		super.onResume();
-		this.setTitle(currentEvent.getEventName());
+		this.setTitle(eventToDisplay.getEventName());
+		
+		eventDateTxtVw.setText(extractDateString(eventToDisplay.getEventTime()));
+		eventTimeTxtVw.setText(extractTimeString(eventToDisplay.getEventTime()));
+		eventNameTxtVw.setText(eventToDisplay.getEventName());
+		eventDecriptionTxtVw.setText(eventToDisplay.getEventDescription());
 		
 		MyGlobal.currentLoc = new GPSTracker(this);
 		if(MyGlobal.currentLoc.canGetLocation())
@@ -67,14 +88,14 @@ public class EventDetailActivity extends FragmentActivity{
 		
 		
 		LatLng UserLatLng = new LatLng(MyGlobal.currentLoc.getLatitude(), MyGlobal.currentLoc.getLongitude());
-		LatLng EventLatLng = new LatLng(currentEvent.getEventLat(),currentEvent.getEventLong());
+		LatLng EventLatLng = new LatLng(eventToDisplay.getEventLat(),eventToDisplay.getEventLong());
 		
 		Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
 		String eventAdrressLine = "";
 		List<Address> addresses = null;
 		try 
 		{
-			addresses = geoCoder.getFromLocation(currentEvent.getEventLat(), currentEvent.getEventLong(), 1);
+			addresses = geoCoder.getFromLocation(eventToDisplay.getEventLat(), eventToDisplay.getEventLong(), 1);
 		}
 		catch (IOException e) 
 		{
@@ -82,12 +103,22 @@ public class EventDetailActivity extends FragmentActivity{
 		}
 		if(addresses != null)
 		{
-			eventAdrressLine = addresses.get(0).getAddressLine(0);
+			if(!addresses.get(0).getAddressLine(0).isEmpty())
+				eventAdrressLine = addresses.get(0).getAddressLine(0);
+			else
+				eventAdrressLine = addresses.get(0).getLocality()+", "+addresses.get(0).getCountryCode();
 		}
 		else 
 		{
 			eventAdrressLine = "Event Location";
 		}
+		
+		//eventLocationTxtVw.setText(eventToDisplay.getEventLocation());
+		eventLocationTxtVw.setText(eventAdrressLine);
+		//TODO add the functionality to add multiple markers here, if the 
+		//address entered returns more than one matches. Currently it is not needed
+		//as it is assumed that addresses entered are precise locations.
+		
 		Marker userLocation = map.addMarker(new MarkerOptions().position(UserLatLng)
 				.title("Your location").flat(false).icon(BitmapDescriptorFactory
 						.fromResource(R.drawable.ic_launcher)));
@@ -98,6 +129,20 @@ public class EventDetailActivity extends FragmentActivity{
 
 		// Zoom in, animating the camera.
 		map.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
+
+	}
+
+	private String extractTimeString(DateTime eventTime) {
+		String timeString = eventTime.toString();
+		timeString = timeString.substring(0, timeString.indexOf("T"));
+		return timeString;
+	}
+
+	private String extractDateString(DateTime eventTime) {
+		// TODO Auto-generated method stub
+		String dateString = eventTime.toString();
+		dateString = dateString.substring(0, dateString.indexOf("T"));
+		return dateString;
 	}
 
 	@Override

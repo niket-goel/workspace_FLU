@@ -31,7 +31,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     
 
     <application
@@ -40,7 +40,7 @@
         android:label="@string/app_name"
         android:theme="@style/FluAppTheme" >
         <activity
-            android:name="com.example.flunetwork.ui.LandingActivity"
+            android:name="com.example.flunetwork.ui.RegisterActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,7 +49,7 @@
             </intent-filter>
         </activity>
            <activity
-            android:name="com.example.flunetwork.ui.RegisterActivity"
+            android:name="com.example.flunetwork.ui.LandingActivity"
             android:label="@string/app_name" >
         </activity>
         <activity

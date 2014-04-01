@@ -14,6 +14,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.entity.eventendpoint.Eventendpoint;
@@ -37,6 +38,9 @@ public class LandingActivity extends Activity implements OnClickListener{
 	EventAdapter myEventAdapter;
 	Button addEventButton;
 	ListView lv;
+	ProgressBar bar;
+	
+	long backPressedTime;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,7 @@ public class LandingActivity extends Activity implements OnClickListener{
 		lv  = (ListView) findViewById(R.id.listView);
 		addEventButton = (Button)findViewById(R.id.eventAddButton); // Bind the button within a method
 
+		bar = (ProgressBar) this.findViewById(R.id.progressBar);
 		//We get the ListView component from the layout
 		// This is a simple adapter that accepts as parameter
 		// Context
@@ -55,12 +60,7 @@ public class LandingActivity extends Activity implements OnClickListener{
 		// The View id used to show the data. The key number and the view id must match
 
 		//simpleAdpt = new SimpleAdapter(this, planetsList, android.R.layout.simple_list_item_1, new String[] {"planet"}, new int[] {android.R.id.text1});
-		if(myEvents == null)
-		{
-			myEvents = new ArrayList<Event>();
-		}
-			
-		new GetEventsTask().execute();
+		
 		
 		//myEventAdapter = new EventAdapter(myEvents, this);
 		//lv.setAdapter(myEventAdapter);
@@ -72,6 +72,7 @@ public class LandingActivity extends Activity implements OnClickListener{
 			public void onItemClick(AdapterView<?> parentAdapter, View view, int position,long id) {
 				//TextView clickedView = (TextView) view; // We know the View is a TextView so we can cast it
 				//setContentView(R.layout.activity_event_detail);
+				MyGlobal.currentEvent = myEvents.get(position);
 				startActivity(new Intent(getApplicationContext(),EventDetailActivity.class));
 				//Toast.makeText(MainActivity.this, "Item with id ["+id+"] - Position ["+position+"] " + "- Planet ["+clickedView.getText()+"]", Toast.LENGTH_SHORT).show();
 			}
@@ -115,6 +116,30 @@ public class LandingActivity extends Activity implements OnClickListener{
 	}
 
 
+	@Override
+	protected void onResume() {
+	    super.onResume();
+	    if(myEvents == null)
+		{
+			myEvents = new ArrayList<Event>();
+		}
+			
+		new GetEventsTask().execute();
+	}
+
+	@Override
+	public void onBackPressed() {
+	    if (backPressedTime + MyGlobal.TIME_DIFF > System.currentTimeMillis()) {
+	        super.onBackPressed();
+	        moveTaskToBack(true);
+	    }
+	    else
+	    {
+		    backPressedTime = System.currentTimeMillis();
+		    Toast.makeText(this, R.string.exit_press_back_twice_message, Toast.LENGTH_SHORT).show();
+	    }
+	}
+	
 	/**
 	 * AsyncTask for calling Mobile Assistant API for getting the list of events
 	 */
@@ -126,7 +151,13 @@ public class LandingActivity extends Activity implements OnClickListener{
 		 * @param params the place where the user is checking in.
 		 */
 		private CollectionResponseEvent eventList = null;
-
+		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			bar.setVisibility(View.VISIBLE);
+		}
+		
 		@Override
 		protected Void doInBackground(Void... params) {
 				Eventendpoint.Builder builder = new Eventendpoint.Builder(
@@ -150,6 +181,7 @@ public class LandingActivity extends Activity implements OnClickListener{
 		protected void onPostExecute(Void result) {
 			// TODO Put some kind of progress bar
 			super.onPostExecute(result);
+			bar.setVisibility(View.INVISIBLE);
 			if(eventList != null)
 			{
 				myEvents.addAll(eventList.getItems());
@@ -162,5 +194,7 @@ public class LandingActivity extends Activity implements OnClickListener{
 			}
 		}
 	}
+	
+	
 
 }
