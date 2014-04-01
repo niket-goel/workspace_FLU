@@ -31,16 +31,18 @@ public class EventEndpoint {
 	@SuppressWarnings({ "unchecked", "unused" })
 	@ApiMethod(name = "listEvent")
 	public CollectionResponse<Event> listEvent(
+			/*@Nullable @Named("geohash") String geoHash,*/
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("limit") Integer limit) {
 
 		EntityManager mgr = null;
 		Cursor cursor = null;
 		List<Event> execute = null;
-
+		
 		try {
 			mgr = getEntityManager();
-			Query query = mgr.createQuery("select from Event as Event");
+			String queryString = "select from Event as Event";// where eventName = \"party\"";
+			Query query = mgr.createQuery(queryString);
 			if (cursorString != null && cursorString != "") {
 				cursor = Cursor.fromWebSafeString(cursorString);
 				query.setHint(JPACursorHelper.CURSOR_HINT, cursor);
@@ -50,7 +52,7 @@ public class EventEndpoint {
 				query.setFirstResult(0);
 				query.setMaxResults(limit);
 			}
-
+			
 			execute = (List<Event>) query.getResultList();
 			cursor = JPACursorHelper.getCursor(execute);
 			if (cursor != null)
