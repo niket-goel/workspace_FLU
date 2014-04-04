@@ -3,9 +3,9 @@
     android:id="@+id/eventListItemLayout"
     android:layout_width="match_parent"
     android:layout_height="250dp"
-    android:background="@drawable/ic_launcher"
+    android:background="@drawable/default_list_image"
     android:orientation="vertical"
-    android:layout_marginTop="@dimen/activity_vertical_margin"
+   
     android:layout_marginBottom="@dimen/activity_vertical_margin"
     android:weightSum="1"
     tools:context=".EventsPage" >
@@ -76,6 +76,7 @@
         android:id="@+id/eventDescriptionView"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
+        android:layout_margin="10dip"
         android:layout_weight=".25"
         android:layout_gravity="right"
         android:gravity="right"
@@ -84,5 +85,12 @@
         android:textSize="20sp"
         android:textStyle="bold" 
         android:textColor="@color/textColorFlu"/>
+    
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="4dip"
+        android:background="@color/textColorFlu">
+        
+    </LinearLayout>
 
 </LinearLayout>

@@ -123,7 +123,7 @@ public class LandingActivity extends Activity implements OnClickListener{
 		{
 			myEvents = new ArrayList<Event>();
 		}
-			
+		
 		new GetEventsTask().execute();
 	}
 
@@ -184,6 +184,8 @@ public class LandingActivity extends Activity implements OnClickListener{
 			bar.setVisibility(View.INVISIBLE);
 			if(eventList != null)
 			{
+				//TODO cleared the list here. Check if it works.
+				myEvents.clear();
 				myEvents.addAll(eventList.getItems());
 				myEventAdapter = new EventAdapter(myEvents, getApplicationContext());
 				lv.setAdapter(myEventAdapter);

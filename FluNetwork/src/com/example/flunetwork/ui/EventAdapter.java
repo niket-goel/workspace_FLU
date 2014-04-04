@@ -95,8 +95,8 @@ public class EventAdapter extends ArrayAdapter<Event> {
 	   {
 		   String timeString = null;
 		   String[] parts = dateTime.split("T");
-		   parts = parts[1].split(".");
-		   timeString = parts[0]+" hrs";
+		   String[] smallerParts = parts[1].split(":");
+		   timeString = smallerParts[0]+":"+ smallerParts[1] +" hrs";
 		   return timeString;
 	   }
 	   
