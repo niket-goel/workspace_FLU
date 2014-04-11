@@ -66,21 +66,23 @@ LocationListener{
 		refreshListButton = (Button)findViewById(R.id.eventRefreshButton); 
 		bar = (ProgressBar) this.findViewById(R.id.progressBar);
 		registerForContextMenu(lv);  
-		// TODO REGISTER FOR CONTEXT MENU  -- FOR THE OPTIONS ON LIST
-
-		// React to user clicks on item
 		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parentAdapter, View view, int position,long id) {
 				MyGlobal.currentEvent = myEvents.get(position);
 				startActivity(new Intent(getApplicationContext(),EventDetailActivity.class));
 			}
 		});		
-		//TODO user click to add event; just redirect to the addEvent layout.
-		// We want to create a context Menu when the user long click on an item
-		// Replace this by swipe to hide 
+		 
 		addEventButton.setOnClickListener(this);
 		refreshListButton.setOnClickListener(this);
+		
+		if(myEvents == null)
+		{
+			myEvents = new ArrayList<Event>();
+		}
 
+		new GetEventsTask().execute();
+		
 		SwipeDismissListViewTouchListener touchListener =
 				new SwipeDismissListViewTouchListener(
 						lv,
@@ -102,16 +104,15 @@ LocationListener{
 						});
 		lv.setOnTouchListener(touchListener);
 		lv.setOnScrollListener(touchListener.makeScrollListener());
-
 	}
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		int itemId = item.getItemId();
-		// Implements our logic
-		item.setVisible(false);
-		MyGlobal.hiddenEvents.add(myEvents.get(itemId));
-		//Toast.makeText(this, "Item id ["+itemId+"]", Toast.LENGTH_SHORT).show();
+//		Implements our logic
+//		item.setVisible(false);
+//		MyGlobal.hiddenEvents.add(myEvents.get(itemId));
+//		Toast.makeText(this, "Item id ["+itemId+"]", Toast.LENGTH_SHORT).show();
 		return true;
 	}
 
@@ -141,12 +142,7 @@ LocationListener{
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(myEvents == null)
-		{
-			myEvents = new ArrayList<Event>();
-		}
-
-		new GetEventsTask().execute();
+	
 	}
 
 	@Override
