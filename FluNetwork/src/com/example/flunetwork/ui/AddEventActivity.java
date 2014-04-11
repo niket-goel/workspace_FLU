@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
-import java.util.logging.ErrorManager;
 
 import com.example.entity.eventendpoint.Eventendpoint;
 import com.example.entity.eventendpoint.model.Event;
@@ -36,7 +34,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,7 +57,6 @@ public class AddEventActivity extends Activity implements OnClickListener{
 	CustomDateTimePicker custom;
 	Event newEvent;
 	Bitmap bmp;
-
 
 	EditText eventName;
 	AutoCompleteTextView eventLocation;
