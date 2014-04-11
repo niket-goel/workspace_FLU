@@ -1,6 +1,8 @@
 package com.example.flunetwork.helper;
 
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -17,7 +19,8 @@ public class MyGlobal {
 	public static GPSTracker currentLoc = null;
 	public static User currentUser = null;
 	public static Event currentEvent = null;
-
+	public static ArrayList<Event> hiddenEvents = new ArrayList<Event>();
+	
 	public static String userID = null;
 	//private static Boolean Registered; 
 	
@@ -52,3 +55,4 @@ public class MyGlobal {
 		editor.commit();
 	}
 }
+
