@@ -7,8 +7,10 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.datanucleus.query.JPACursorHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -28,21 +30,20 @@ public class EventEndpoint {
 	 * @return A CollectionResponse class containing the list of all entities
 	 * persisted and a cursor to the next page.
 	 */
+	
 	@SuppressWarnings({ "unchecked", "unused" })
 	@ApiMethod(name = "listEvent")
 	public CollectionResponse<Event> listEvent(
-			/*@Nullable @Named("geohash") String geoHash,*/
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("limit") Integer limit) {
 
 		EntityManager mgr = null;
 		Cursor cursor = null;
 		List<Event> execute = null;
-		
+
 		try {
 			mgr = getEntityManager();
-			String queryString = "select from Event as Event";// where eventName = \"party\"";
-			Query query = mgr.createQuery(queryString);
+			Query query = mgr.createQuery("select from Event as Event");
 			if (cursorString != null && cursorString != "") {
 				cursor = Cursor.fromWebSafeString(cursorString);
 				query.setHint(JPACursorHelper.CURSOR_HINT, cursor);
@@ -52,7 +53,7 @@ public class EventEndpoint {
 				query.setFirstResult(0);
 				query.setMaxResults(limit);
 			}
-			
+
 			execute = (List<Event>) query.getResultList();
 			cursor = JPACursorHelper.getCursor(execute);
 			if (cursor != null)
@@ -69,6 +70,79 @@ public class EventEndpoint {
 		return CollectionResponse.<Event> builder().setItems(execute)
 				.setNextPageToken(cursorString).build();
 	}
+
+	
+/*	@SuppressWarnings({ "unchecked", "unused" })
+	@ApiMethod(name = "listEvent")
+	public CollectionResponse<Event> listEvent(
+			@Named("cursor") String geoHashString,
+			@Named("eventList") List<String> userEventKeys,
+			@Named("limit") Integer limit) {
+
+		geoHashString = geoHashString.substring(0, 8);
+
+		EntityManager mgr = null;
+		Cursor cursor = null;
+		
+		List<Event> execute = null;
+		List<String>eventsInVicinity = null;
+		List<String>eventsToReturn = new ArrayList<String>();
+		
+		Query query;
+		
+
+		try {
+			mgr = getEntityManager();
+			//Query query = mgr.createQuery("select from Event as Event");
+			query = mgr.createQuery("SELECT u.eventKey FROM UserEventList u WHERE u.geoHash LIKE '"+geoHashString+"%'");
+			eventsInVicinity = (List<String>) query.getResultList();
+			
+			for (String key : eventsInVicinity)
+			{
+				if(!userEventKeys.contains(key))
+					eventsToReturn.add(key);
+			}
+			String queryClause = "( ";
+			for (String key: eventsToReturn)
+			{
+				queryClause = queryClause +"'"+ key.toString() + "', ";
+			}
+			
+			queryClause = queryClause.substring(0, queryClause.lastIndexOf(","))+" )";
+			
+			query = mgr.createQuery("SELECT from Event as Event WHERE Key IN "+queryClause);
+			execute = (List<Event>)query.getResultList();
+			if (cursorString != null && cursorString != "") {
+				cursor = Cursor.fromWebSafeString(cursorString);
+				query.setHint(JPACursorHelper.CURSOR_HINT, cursor);
+			}
+
+			if (limit != null) {
+				query.setFirstResult(0);
+				query.setMaxResults(limit);
+			}
+
+			execute = (List<Event>) query.getResultList();
+			cursor = JPACursorHelper.getCursor(execute);
+			if (cursor != null)
+				goeHashString = cursor.toWebSafeString();
+
+			// Tight loop for fetching all entities from datastore and accomodate
+			// for lazy fetch.
+			for (Event obj : execute)
+				;
+		} finally {
+			mgr.close();
+		}
+		if(execute.isEmpty())
+		{
+			Event dummyEvent = new Event();
+			dummyEvent.setEventName("There was no event to be returned");
+			execute.add(dummyEvent);
+		}
+		return CollectionResponse.<Event> builder().setItems(execute).build();
+				
+	}*/
 
 	/**
 	 * This method gets the entity having primary key id. It uses HTTP GET method.
@@ -104,6 +178,7 @@ public class EventEndpoint {
 				throw new EntityExistsException("Object already exists");
 			}
 			mgr.persist(event);
+			
 		} finally {
 			mgr.close();
 		}

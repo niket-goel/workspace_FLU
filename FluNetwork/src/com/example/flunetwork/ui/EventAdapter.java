@@ -42,12 +42,13 @@ public class EventAdapter extends ArrayAdapter<Event> {
 	           TextView eventLocationView = (TextView) convertView.findViewById(R.id.eventLocation);
 	           TextView eventTimeView = (TextView) convertView.findViewById(R.id.eventTime);
 	           TextView eventDateView = (TextView) convertView.findViewById(R.id.eventDate);
-	           TextView eventDescriptionView = (TextView) convertView.findViewById(R.id.eventDescriptionView);
+//	           TODO remove to show description
+//	           TextView eventDescriptionView = (TextView) convertView.findViewById(R.id.eventDescriptionView);
 	           LinearLayout rootLayout = (LinearLayout) convertView.findViewById(R.id.eventListItemLayout);
 	           //Event eventId = myEvents.get(position); TODO
 	           //TODO assign the actual image here
 	           Drawable bgImage = context.getResources().getDrawable(R.drawable.default_list_image);
-	           bgImage.setAlpha(30);
+	           bgImage.setAlpha(50);
 	           rootLayout.setBackground(bgImage);
 	           //rootLayout.setAlpha(0.2f);
 	           // TODO Perform NULL checks
@@ -75,11 +76,12 @@ public class EventAdapter extends ArrayAdapter<Event> {
 	        	   eventTimeView.setText("Dunno when!");
 	        	   eventDateView.setText(null);
 	           }
-	        	
-	           if(EventList.get(position).getEventDescription() != null)
+	        	//TODO remove to show description
+	           /*if(EventList.get(position).getEventDescription() != null)
 	        	   eventDescriptionView.setText(EventList.get(position).getEventDescription().toString());
 	           else
-	        	   eventTimeView.setText("That's all we heard about the event!!!");
+	        	   eventTimeView.setText("That's all we heard about the event!!!");*/
+	           
 	       return convertView;
 	   }
 	   

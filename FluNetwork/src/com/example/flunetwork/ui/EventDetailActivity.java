@@ -30,52 +30,53 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class EventDetailActivity extends FragmentActivity{
 
 	GoogleMap map;
 	Event eventToDisplay;
-	
+
 	TextView eventDateTxtVw;
 	TextView eventTimeTxtVw;
 	TextView eventNameTxtVw;
 	TextView eventLocationTxtVw;
 	TextView eventDecriptionTxtVw;
-	
-	
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_detail);
-		
+
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapDisplayLoc)).getMap();
-		
+
 		eventToDisplay = MyGlobal.currentEvent;
 		/*eventToDisplay.setEventDescription("This is a default description");
 		eventToDisplay.setEventLat(29.6433692 + .01);
 		eventToDisplay.setEventLong(-82.3474775);
 		eventToDisplay.setEventName("Awesome Event");*/
-		
+
 		eventDateTxtVw = (TextView)findViewById(R.id.eventDateTextView);
 		eventTimeTxtVw = (TextView)findViewById(R.id.eventTimeTextView);
 		eventNameTxtVw = (TextView)findViewById(R.id.eventNameTextView);
 		eventLocationTxtVw = (TextView)findViewById(R.id.eventLocationTextView);
 		eventDecriptionTxtVw = (TextView)findViewById(R.id.eventDescriptionTextView);
-		
+
 		//currentEvent.setEventTime(new Date());
-		
+
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		this.setTitle(eventToDisplay.getEventName());
-		
+
 		eventDateTxtVw.setText(extractDateString(eventToDisplay.getEventTime()));
 		eventTimeTxtVw.setText(extractTimeString(eventToDisplay.getEventTime()));
 		eventNameTxtVw.setText(eventToDisplay.getEventName());
 		eventDecriptionTxtVw.setText(eventToDisplay.getEventDescription());
-		
+
 		MyGlobal.currentLoc = new GPSTracker(this);
 		if(MyGlobal.currentLoc.canGetLocation())
 		{
@@ -85,21 +86,29 @@ public class EventDetailActivity extends FragmentActivity{
 		{
 			MyGlobal.currentLoc.showSettingsAlert();
 		}
-		
-		
+
+
 		LatLng UserLatLng = new LatLng(MyGlobal.currentLoc.getLatitude(), MyGlobal.currentLoc.getLongitude());
 		LatLng EventLatLng = new LatLng(eventToDisplay.getEventLat(),eventToDisplay.getEventLong());
-		
+
 		Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
 		String eventAdrressLine = "";
 		List<Address> addresses = null;
-		try 
+		if(eventToDisplay.getEventLat() > 0.0 && eventToDisplay.getEventLat() < 9999  
+				&& eventToDisplay.getEventLong() < 0.0 && eventToDisplay.getEventLong() < 9999)
 		{
-			addresses = geoCoder.getFromLocation(eventToDisplay.getEventLat(), eventToDisplay.getEventLong(), 1);
+			try 
+			{
+				addresses = geoCoder.getFromLocation(eventToDisplay.getEventLat(), eventToDisplay.getEventLong(), 1);
+			}
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
 		}
-		catch (IOException e) 
+		else
 		{
-			e.printStackTrace();
+			Toast.makeText(this, "Error! Could not fetch event location", Toast.LENGTH_SHORT).show();
 		}
 		if(addresses != null)
 		{
@@ -112,13 +121,13 @@ public class EventDetailActivity extends FragmentActivity{
 		{
 			eventAdrressLine = "Event Location";
 		}
-		
+
 		//eventLocationTxtVw.setText(eventToDisplay.getEventLocation());
 		eventLocationTxtVw.setText(eventAdrressLine);
 		//TODO add the functionality to add multiple markers here, if the 
 		//address entered returns more than one matches. Currently it is not needed
 		//as it is assumed that addresses entered are precise locations.
-		
+
 		Marker userLocation = map.addMarker(new MarkerOptions().position(UserLatLng)
 				.title("Your location").flat(false).icon(BitmapDescriptorFactory
 						.fromResource(R.drawable.ic_launcher)));
@@ -133,15 +142,29 @@ public class EventDetailActivity extends FragmentActivity{
 	}
 
 	private String extractTimeString(DateTime eventTime) {
-		String timeString = eventTime.toString();
-		timeString = timeString.substring(0, timeString.indexOf("T"));
+		String timeString =null;
+		if(eventTime!=null)
+		{
+			timeString = eventTime.toString();
+			timeString = timeString.substring(0, timeString.indexOf("T"));
+		}
+		else
+		{
+			timeString = "--:--";
+		}
 		return timeString;
 	}
 
 	private String extractDateString(DateTime eventTime) {
 		// TODO Auto-generated method stub
-		String dateString = eventTime.toString();
-		dateString = dateString.substring(0, dateString.indexOf("T"));
+		String dateString = null; 
+		if(eventTime!=null)
+		{
+			dateString = eventTime.toString();
+			dateString = dateString.substring(0, dateString.indexOf("T"));
+		}
+		else
+			dateString = "--/--/--";
 		return dateString;
 	}
 

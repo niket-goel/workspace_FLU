@@ -136,8 +136,8 @@
           "key" : {
             "$ref" : "Key"
           },
-          "phoneNumber" : {
-            "$ref" : "PhoneNumber"
+          "userEmailID" : {
+            "type" : "string"
           },
           "userName" : {
             "type" : "string"
@@ -150,6 +150,9 @@
           },
           "userLat" : {
             "type" : "number"
+          },
+          "userGeoHash" : {
+            "type" : "string"
           },
           "usertLat" : {
             "type" : "number"
@@ -180,15 +183,6 @@
             "type" : "boolean"
           },
           "namespace" : {
-            "type" : "string"
-          }
-        }
-      },
-      "PhoneNumber" : {
-        "id" : "PhoneNumber",
-        "type" : "object",
-        "properties" : {
-          "number" : {
             "type" : "string"
           }
         }

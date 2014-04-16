@@ -184,6 +184,9 @@
           },
           "eventName" : {
             "type" : "string"
+          },
+          "eventCOI" : {
+            "type" : "string"
           }
         }
       },

@@ -26,6 +26,7 @@
     <string name="eventTime">2000 hrs</string>
     <string name="eventDate">23 Mar</string>
     <string name="title_activity_add_event">Add Event</string>
+    <string name="title_activity_refresh_event_list">Refresh</string>
     <string name="eventNameWhat">What\'s Happening?</string>
     <string name="evenLocationWhere">Where is it?</string>
     <string name="eventTimeWhen">When is it?</string>

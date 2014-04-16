@@ -2,15 +2,14 @@ package com.example.flunetwork.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.location.Location;
 import android.location.LocationListener;
-import android.opengl.Visibility;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.view.Menu;
@@ -29,12 +28,17 @@ import com.example.entity.eventendpoint.model.Event;
 import com.example.entity.userendpoint.Userendpoint;
 import com.example.flunetwork.CloudEndpointUtils;
 import com.example.flunetwork.R;
+import com.example.flunetwork.helper.GPSTracker;
 import com.example.flunetwork.helper.MyGlobal;
 import com.example.flunetwork.ui.EventAdapter;
 import com.example.flunetwork.ui.SwipeDismissListViewTouchListener.DismissCallbacks;
 import com.github.davidmoten.geo.GeoHash;
+import com.github.davidmoten.geo.LatLong;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.json.jackson.JacksonFactory;
 
@@ -46,6 +50,8 @@ LocationListener{
 
 	ArrayList<Event> myEvents;
 	EventAdapter myEventAdapter;
+	LocationClient locClient;
+	LocationRequest mLocationRequest;
 
 	Button addEventButton;
 	Button refreshListButton;
@@ -60,11 +66,11 @@ LocationListener{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_landing);
-		// initList();
 		lv  = (ListView) findViewById(R.id.listView);
 		addEventButton = (Button)findViewById(R.id.eventAddButton); 
 		refreshListButton = (Button)findViewById(R.id.eventRefreshButton); 
 		bar = (ProgressBar) this.findViewById(R.id.progressBar);
+		
 		registerForContextMenu(lv);  
 		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parentAdapter, View view, int position,long id) {
@@ -76,12 +82,23 @@ LocationListener{
 		addEventButton.setOnClickListener(this);
 		refreshListButton.setOnClickListener(this);
 		
+		MyGlobal.currentLoc = new GPSTracker(this);
+		
 		if(myEvents == null)
 		{
 			myEvents = new ArrayList<Event>();
 		}
 
-		new GetEventsTask().execute();
+		if(MyGlobal.currentLoc.canGetLocation())
+		{
+			MyGlobal.currentLoc.getLocation();
+			LatLong latlong = new LatLong(MyGlobal.currentLoc.getLatitude(), MyGlobal.currentLoc.getLongitude());
+			new GetEventsTask().execute(GeoHash.encodeHash(latlong, MyGlobal.COI_ONE));
+		}
+		else
+		{
+			MyGlobal.currentLoc.showSettingsAlert();
+		}
 		
 		SwipeDismissListViewTouchListener touchListener =
 				new SwipeDismissListViewTouchListener(
@@ -98,43 +115,55 @@ LocationListener{
 
 							@Override
 							public boolean canDismiss(int position) {
-								// TODO Auto-generated method stub
 								return true;
 							}
 						});
 		lv.setOnTouchListener(touchListener);
 		lv.setOnScrollListener(touchListener.makeScrollListener());
+		
+		//Location management
+		locClient = new LocationClient(this, this, this);
+		 // Create the LocationRequest object
+        mLocationRequest = LocationRequest.create();
+        // Use high accuracy
+        mLocationRequest.setPriority(
+                LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        // Set the update interval to 5 seconds
+        mLocationRequest.setInterval(MyGlobal.UPDATE_INTERVAL);
+        // Set the fastest update interval to 1 second
+        mLocationRequest.setFastestInterval(MyGlobal.FASTEST_INTERVAL);
 	}
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		int itemId = item.getItemId();
-//		Implements our logic
-//		item.setVisible(false);
-//		MyGlobal.hiddenEvents.add(myEvents.get(itemId));
-//		Toast.makeText(this, "Item id ["+itemId+"]", Toast.LENGTH_SHORT).show();
 		return true;
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		//getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
 
 	@Override
 	public void onClick(View v) {
 		if(v == addEventButton)
 		{
-			//create a new intent that will launch the new 'page'
 			Intent addEventIntent = new Intent(LandingActivity.this, AddEventActivity.class);
 			startActivity(addEventIntent);
 		}
 		else if(v == refreshListButton)
 		{
-			new GetEventsTask().execute();
+			MyGlobal.currentLoc = new GPSTracker(this);
+			if(MyGlobal.currentLoc.canGetLocation())
+			{
+				MyGlobal.currentLoc.getLocation();
+				LatLong latlong = new LatLong(MyGlobal.currentLoc.getLatitude(), MyGlobal.currentLoc.getLongitude());
+				new GetEventsTask().execute(GeoHash.encodeHash(latlong, MyGlobal.COI_ONE));
+			}
+			else
+			{
+				MyGlobal.currentLoc.showSettingsAlert();
+			}
 		}
 	}
 
@@ -161,7 +190,7 @@ LocationListener{
 	/**
 	 * AsyncTask for calling Mobile Assistant API for getting the list of events
 	 */
-	private class GetEventsTask extends AsyncTask<Void, Void, Void> {
+	private class GetEventsTask extends AsyncTask<String, String, Void> {
 
 		/**
 		 * Calls appropriate CloudEndpoint to indicate that user checked into a place.
@@ -177,17 +206,23 @@ LocationListener{
 		}
 
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected Void doInBackground(String... params) {
 			Eventendpoint.Builder builder = new Eventendpoint.Builder(
 					AndroidHttp.newCompatibleTransport(), new JacksonFactory(),
 					null);
 
+			String geohash = params[0];
 			builder = CloudEndpointUtils.updateBuilder(builder);
-
+			List<String> eventsOnDevice = new ArrayList<String>();
+			for(Event e : myEvents)
+			{
+				eventsOnDevice.add(e.getKey().toString());
+			}
 			Eventendpoint endpoint = builder.build();
 
 
 			try {
+				 //TODO eventList = endpoint.listEvent(geohash,eventsOnDevice,0).execute();
 				eventList = endpoint.listEvent().execute();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -201,6 +236,10 @@ LocationListener{
 			bar.setVisibility(View.INVISIBLE);
 			if(eventList != null)
 			{
+				if(eventList.size() == 1 && ((List<Event>)eventList.getItems()).get(0).getEventName().equals("There was no event to be returned"))
+				{
+					Toast.makeText(getApplicationContext(), "No events around you!", Toast.LENGTH_SHORT).show();
+				}
 				myEvents.clear();
 				myEvents.addAll(eventList.getItems());
 				// Removing the hidden elements from the event list
@@ -227,7 +266,6 @@ LocationListener{
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			//TODO
 		}
 
 		/**
@@ -238,8 +276,16 @@ LocationListener{
 		@Override
 		protected Void doInBackground(Void... params) {
 
-			MyGlobal.currentUser.setUserLat(MyGlobal.currentLoc.getLatitude());
-			MyGlobal.currentUser.setUserLong(MyGlobal.currentLoc.getLongitude());
+			if(MyGlobal.currentLoc.canGetLocation())
+			{
+				MyGlobal.currentLoc.getLocation();
+				MyGlobal.currentUser.setUserLat(MyGlobal.currentLoc.getLatitude());
+				MyGlobal.currentUser.setUserLong(MyGlobal.currentLoc.getLongitude());
+			}
+			else
+			{
+				MyGlobal.currentLoc.showSettingsAlert();
+			}
 
 			Userendpoint.Builder builder = new Userendpoint.Builder(
 					AndroidHttp.newCompatibleTransport(), new JacksonFactory(),
@@ -260,14 +306,20 @@ LocationListener{
 		}
 		@Override
 		protected void onPostExecute(Void result) {
-			// TODO 
 			super.onPostExecute(result);
+			if(MyGlobal.currentLoc.canGetLocation())
+			{
+				MyGlobal.currentLoc.getLocation();
+				LatLong latlong = new LatLong(MyGlobal.currentLoc.getLatitude(), MyGlobal.currentLoc.getLongitude());
+				new GetEventsTask().execute(GeoHash.encodeHash(latlong, MyGlobal.COI_ONE));
+			}
+			else
+			{
+				MyGlobal.currentLoc.showSettingsAlert();
+			}
 
 		}
 	}
-
-
-
 
 	// Manage periodical location updates
 
@@ -276,10 +328,6 @@ LocationListener{
 	@Override
 	public void onLocationChanged(Location location) {
 		// Report to the UI that the location was updated
-		String msg = "Updated Location: " +
-				Double.toString(location.getLatitude()) + "," +
-				Double.toString(location.getLongitude());
-		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 		new UpdateUserTask().execute();
 
 	}
@@ -294,6 +342,7 @@ LocationListener{
 	public void onConnected(Bundle dataBundle) {
 		// Display the connection status
 		Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
+		//locClient.requestLocationUpdates(mLocationRequest, this);
 	}
 	/*
 	 * Called by Location Services if the connection to the
@@ -356,6 +405,7 @@ LocationListener{
 	@Override
 	public void onProviderDisabled(String provider) {
 		// TODO Auto-generated method stub
+		Toast.makeText(this, "Connection Lost", Toast.LENGTH_SHORT).show();
 
 	}
 

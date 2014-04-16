@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"FWXGb4Q2eZqWRcG8B2Ixrr-vrqQ/YroEBkaOWg1NuHMlG4nDmYpaU7M\"",
+ "etag": "\"IneSQDZRISaU6plvxbhHIOAs-WY/CcKqsU9CAqyNcrzHnTOwrbYQq44\"",
  "discoveryVersion": "v1",
  "id": "eventendpoint:v1",
  "name": "eventendpoint",
@@ -94,6 +94,9 @@
     "downVotes": {
      "type": "string",
      "format": "int64"
+    },
+    "eventCOI": {
+     "type": "string"
     },
     "eventDescription": {
      "type": "string"

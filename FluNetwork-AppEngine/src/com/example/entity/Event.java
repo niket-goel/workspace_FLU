@@ -35,6 +35,7 @@ public class Event {
 	private EventType eventType; //Unused -- we hope future generations can use it \m/!!!
 	private String eventDescription;
 	private String eventName;
+	private String eventCOI;
 	//TODO Find a way to get the GPS coordinates from address provided by user
 	
 	/**
@@ -147,6 +148,22 @@ public class Event {
 	public void setEventLocation(String eventLocation) {
 		this.eventLocation = eventLocation;
 	}
+
+	/**
+	 * @return the eventCOI
+	 */
+	public String getEventCOI() {
+		return eventCOI;
+	}
+
+	/**
+	 * @param eventCOI the eventCOI to set
+	 */
+	public void setEventCOI(String eventCOI) {
+		this.eventCOI = eventCOI;
+	}
+
+
 }
 /**
  * Types of Events.

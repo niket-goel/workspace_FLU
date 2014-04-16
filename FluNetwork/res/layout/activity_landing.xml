@@ -3,58 +3,69 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<LinearLayout 
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="0dp"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".LandingActivity" 
-    android:orientation="vertical">
-     
-    <ListView android:id="@+id/listView"
-              android:layout_height="fill_parent"
-              android:layout_width="match_parent"
-              android:layout_weight=".1"
-              android:scrollbars="vertical"
-              />
+    android:background="@drawable/ic_flu_image" >
 
-    <LinearLayout android:id="@+id/landingButtonLayout"
-        android:layout_height="fill_parent"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_weight=".9"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal">
-    <Button android:id="@+id/eventAddButton"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent"
-        android:layout_weight=".5"
-        android:text="@string/title_activity_add_event"
-        style="@style/fluWideButtonStyle"
-        android:layout_margin="0dip"
-        android:layout_marginRight="2.5dip"
-        android:padding="0dip"
-        android:textStyle = "bold" />"
-    <Button android:id="@+id/eventRefreshButton"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent"
-        android:layout_weight=".5"
-        android:text="@string/title_activity_refresh_event_list"
-        style="@style/fluWideButtonStyle"
-        android:layout_margin="0dip"
-        android:layout_marginLeft="2.5dip"
-        android:padding="0dip"
-        android:textStyle = "bold"
-        />
+        android:layout_height="match_parent"
+        android:background="#80FFFFFF"
+        android:orientation="vertical"
+        android:paddingBottom="0dp"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context=".LandingActivity" >
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight=".1"
+            android:scrollbars="vertical" />
+
+        <LinearLayout
+            android:id="@+id/landingButtonLayout"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight=".9"
+            android:background="#80FFFFFF"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/eventAddButton"
+                style="@style/fluWideButtonStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="0dip"
+                android:layout_marginRight="2.5dip"
+                android:layout_weight=".5"
+                android:padding="0dip"
+                android:text="@string/title_activity_add_event"
+                android:textStyle="bold" />
+"
+
+            <Button
+                android:id="@+id/eventRefreshButton"
+                style="@style/fluWideButtonStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="0dip"
+                android:layout_marginLeft="2.5dip"
+                android:layout_weight=".5"
+                android:padding="0dip"
+                android:text="@string/title_activity_refresh_event_list"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
- <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:visibility="gone" >
-        </ProgressBar>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone" >
+    </ProgressBar>
+
 </RelativeLayout>

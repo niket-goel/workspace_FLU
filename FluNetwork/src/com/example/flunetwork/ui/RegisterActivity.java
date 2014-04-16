@@ -67,7 +67,6 @@ public class RegisterActivity extends Activity implements OnClickListener{
 		else
 		{
 			registerBtn.setVisibility(Button.INVISIBLE);
-			//TODO navigate to landing activity
 			startActivity(new Intent(this,LandingActivity.class));
 		}
 	}
@@ -87,8 +86,6 @@ public class RegisterActivity extends Activity implements OnClickListener{
 
 		}
 	}
-
-
 	/**
 	 * AsyncTask for calling Mobile Assistant API for checking into a place (e.g., a store)
 	 */
@@ -133,6 +130,9 @@ public class RegisterActivity extends Activity implements OnClickListener{
 
 			try {
 				MyGlobal.currentUser = endpoint.insertUser(newUser).execute();
+				// TODO use the update function instead of the insert one. Deploy the latest 
+				// backend for it to work. Even then it might not work.
+				//MyGlobal.currentUser = endpoint.updateUser(newUser).execute();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -144,7 +144,7 @@ public class RegisterActivity extends Activity implements OnClickListener{
 			// TODO Put some kind of progress bar
 			super.onPostExecute(result);
 			if(MyGlobal.currentUser != null)
-			{
+			{ 
 				MyGlobal.setRegistered(getApplicationContext(), true);
 				startActivity(new Intent(getApplicationContext(),LandingActivity.class));
 			}

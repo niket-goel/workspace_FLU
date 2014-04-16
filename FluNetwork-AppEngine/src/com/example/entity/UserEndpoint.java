@@ -7,6 +7,7 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.datanucleus.query.JPACursorHelper;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import javax.inject.Named;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 @Api(name = "userendpoint", namespace = @ApiNamespace(ownerDomain = "example.com", ownerName = "example.com", packagePath = "entity"))
@@ -120,9 +122,10 @@ public class UserEndpoint {
 	public User updateUser(User user) {
 		EntityManager mgr = getEntityManager();
 		try {
-			if (!containsUser(user)) {
-				throw new EntityNotFoundException("Object does not exist");
-			}
+			User u = mgr.find(User.class, user.getKey());
+			u.setUserGeoHash(user.getUserGeoHash());
+			u.setUserLat(user.getUsertLat());
+			u.setUserLong(user.getUserLong());
 			mgr.persist(user);
 		} finally {
 			mgr.close();

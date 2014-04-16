@@ -10,6 +10,8 @@ import java.util.List;
 
 import com.example.entity.eventendpoint.Eventendpoint;
 import com.example.entity.eventendpoint.model.Event;
+import com.example.entity.usereventlistendpoint.Usereventlistendpoint;
+import com.example.entity.usereventlistendpoint.model.UserEventList;
 import com.example.flunetwork.CloudEndpointUtils;
 import com.example.flunetwork.R;
 import com.example.flunetwork.helper.CustomDateTimePicker;
@@ -239,6 +241,8 @@ public class AddEventActivity extends Activity implements OnClickListener{
 			//new date
 			newEvent.setEventName(eventNameString);
 			newEvent.setEventDescription(eventDescriptionString);
+			//newEvent.setEventTime(eventTimeString);
+			newEvent.setEventLocation(eventLocationString);
 			//newEvent.setEventTime(
 
 			//user.setLocation(new FluLocation(latitude,longitude)); TODO
@@ -253,7 +257,7 @@ public class AddEventActivity extends Activity implements OnClickListener{
 
 
 			try {
-				endpoint.insertEvent(newEvent).execute();
+				newEvent = endpoint.insertEvent(newEvent).execute();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -265,7 +269,55 @@ public class AddEventActivity extends Activity implements OnClickListener{
 		@Override
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
+//TODO			new CreateUserEventTask().execute();
 			finish();
+			
+		}
+	}
+	
+	/**
+	 * AsyncTask for calling Mobile Assistant API for Pushing an event to the server
+	 */
+	private class CreateUserEventTask extends AsyncTask<Void, Void, Void> {
+
+		/**
+		 * Calls appropriate CloudEndpoint to add a user created event.
+		 *
+		 * @param params the event the user just created.
+		 */
+		@Override
+		protected Void doInBackground(Void... params) {
+			// TODO Assuming that the string entered in the description
+			// is a well defined location, and can be reverse geocoded.
+
+			UserEventList userEvent = new UserEventList();
+			userEvent.setEventKey(newEvent.getKey().toString());
+			userEvent.setUserMail(MyGlobal.currentUser.getUserEmailID());
+			userEvent.setHopNumber(0);
+			
+			Usereventlistendpoint.Builder builder = new Usereventlistendpoint.Builder(
+					AndroidHttp.newCompatibleTransport(), new JacksonFactory(),
+					null);
+
+			builder = CloudEndpointUtils.updateBuilder(builder);
+
+			Usereventlistendpoint endpoint = builder.build();
+
+
+			try {
+				endpoint.insertUserEventList(userEvent).execute();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			
 		}
 	}
 

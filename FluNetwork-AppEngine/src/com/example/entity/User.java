@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PhoneNumber;
 
@@ -22,11 +23,12 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key key;
-	private PhoneNumber phoneNumber;
+	private String userEmailID;
 	private String userName;
 	private Boolean isPublisher;
 	private double userLong;
 	private double userLat;
+	private String userGeoHash;
 	
 /*	public User() {
 		phoneNumber = null;
@@ -42,12 +44,6 @@ public class User {
 	 */
 	public Key getKey() {
 		return key;
-	}
-	public PhoneNumber getPhoneNumber() {
-		return phoneNumber;
-	}
-	public void setPhoneNumber(PhoneNumber phoneNumber) {
-		this.phoneNumber = phoneNumber;
 	}
 	public String getUserName() {
 		return userName;
@@ -77,6 +73,30 @@ public class User {
 
 	public void setUserLat(double userLat) {
 		this.userLat = userLat;
+	}
+	/**
+	 * @return the userGeoHash
+	 */
+	public String getUserGeoHash() {
+		return userGeoHash;
+	}
+	/**
+	 * @param userGeoHash the userGeoHash to set
+	 */
+	public void setUserGeoHash(String userGeoHash) {
+		this.userGeoHash = userGeoHash;
+	}
+	/**
+	 * @return the userEmailID
+	 */
+	public String getUserEmailID() {
+		return userEmailID;
+	}
+	/**
+	 * @param userEmailID the userEmailID to set
+	 */
+	public void setUserEmailID(String userEmailID) {
+		this.userEmailID = userEmailID;
 	}
 	
 }

@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"FWXGb4Q2eZqWRcG8B2Ixrr-vrqQ/jJm_3n_BSsGjsSXncvrTySE8M0s\"",
+ "etag": "\"IneSQDZRISaU6plvxbhHIOAs-WY/rlHsEqq5N2SBbTKP789lnP0DoTg\"",
  "discoveryVersion": "v1",
  "id": "userendpoint:v1",
  "name": "userendpoint",
@@ -117,15 +117,6 @@
     }
    }
   },
-  "PhoneNumber": {
-   "id": "PhoneNumber",
-   "type": "object",
-   "properties": {
-    "number": {
-     "type": "string"
-    }
-   }
-  },
   "User": {
    "id": "User",
    "type": "object",
@@ -136,8 +127,11 @@
     "key": {
      "$ref": "Key"
     },
-    "phoneNumber": {
-     "$ref": "PhoneNumber"
+    "userEmailID": {
+     "type": "string"
+    },
+    "userGeoHash": {
+     "type": "string"
     },
     "userLat": {
      "type": "number",
