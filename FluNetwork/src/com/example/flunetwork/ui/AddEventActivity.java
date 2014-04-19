@@ -14,7 +14,6 @@ import com.example.entity.usereventlistendpoint.Usereventlistendpoint;
 import com.example.entity.usereventlistendpoint.model.UserEventList;
 import com.example.flunetwork.CloudEndpointUtils;
 import com.example.flunetwork.R;
-import com.example.flunetwork.helper.CustomDateTimePicker;
 import com.example.flunetwork.helper.MyGlobal;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.json.jackson.JacksonFactory;
