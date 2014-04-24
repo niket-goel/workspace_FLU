@@ -50,6 +50,7 @@ public class EventDetailActivity extends FragmentActivity{
 		setContentView(R.layout.activity_event_detail);
 
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapDisplayLoc)).getMap();
+		map.setMyLocationEnabled(true);
 
 		eventToDisplay = MyGlobal.currentEvent;
 		/*eventToDisplay.setEventDescription("This is a default description");

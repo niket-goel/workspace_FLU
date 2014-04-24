@@ -14,6 +14,7 @@ import com.example.entity.usereventlistendpoint.Usereventlistendpoint;
 import com.example.entity.usereventlistendpoint.model.UserEventList;
 import com.example.flunetwork.CloudEndpointUtils;
 import com.example.flunetwork.R;
+import com.example.flunetwork.helper.CustomDateTimePicker;
 import com.example.flunetwork.helper.MyGlobal;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.json.jackson.JacksonFactory;
@@ -274,16 +275,16 @@ public class AddEventActivity extends Activity implements OnClickListener{
 		}
 	}
 	
-	/**
+/*	*//**
 	 * AsyncTask for calling Mobile Assistant API for Pushing an event to the server
-	 */
+	 *//*
 	private class CreateUserEventTask extends AsyncTask<Void, Void, Void> {
 
-		/**
+		*//**
 		 * Calls appropriate CloudEndpoint to add a user created event.
 		 *
 		 * @param params the event the user just created.
-		 */
+		 *//*
 		@Override
 		protected Void doInBackground(Void... params) {
 			// TODO Assuming that the string entered in the description
@@ -318,7 +319,7 @@ public class AddEventActivity extends Activity implements OnClickListener{
 			super.onPostExecute(result);
 			
 		}
-	}
+	}*/
 
 	// And the corresponding Adapter
 	private class AutoCompleteAdapter extends ArrayAdapter<Address> implements Filterable {

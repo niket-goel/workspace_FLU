@@ -1,13 +1,13 @@
 {
   "files": [
     {
-      "downloadUrl": "/downloads/eventendpoint/v1/20140416180230/java/1.16.0-rc/example.com-eventendpoint-v1-20140416180230-java-1.16.0-rc-sources.jar", 
-      "path": "example.com-eventendpoint-v1-20140416180230-java-1.16.0-rc-sources.jar", 
+      "downloadUrl": "/downloads/eventendpoint/v1/20140424195434/java/1.16.0-rc/example.com-eventendpoint-v1-20140424195434-java-1.16.0-rc-sources.jar", 
+      "path": "example.com-eventendpoint-v1-20140424195434-java-1.16.0-rc-sources.jar", 
       "type": "source", 
-      "timestamp": "2014-04-16 18:02"
+      "timestamp": "2014-04-24 19:54"
     }, 
     {
-      "path": "example.com-eventendpoint-v1-20140416180230-java-1.16.0-rc.jar.properties", 
+      "path": "example.com-eventendpoint-v1-20140424195434-java-1.16.0-rc.jar.properties", 
       "type": "android.properties"
     }
   ], 
@@ -702,5 +702,5 @@
   "packagePath": "entity", 
   "language_version": "1.16.0-rc", 
   "id": "eventendpoint:v1", 
-  "revision": 20140416180230
+  "revision": 20140424195434
 }
