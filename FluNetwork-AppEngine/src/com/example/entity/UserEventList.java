@@ -20,7 +20,7 @@ public class UserEventList {
 	private Key key;
 	
 	private String geoHash;
-	private String eventKey;
+	private Key eventKey;
 	private int hopNumber;
 	/**
 	 * @return the userMail
@@ -40,13 +40,13 @@ public class UserEventList {
 	/**
 	 * @return the eventKey
 	 */
-	public String getEventKey() {
+	public Key getEventKey() {
 		return eventKey;
 	}
 	/**
 	 * @param eventKey the eventKey to set
 	 */
-	public void setEventKey(String eventKey) {
+	public void setEventKey(Key eventKey) {
 		this.eventKey = eventKey;
 	}
 	/**

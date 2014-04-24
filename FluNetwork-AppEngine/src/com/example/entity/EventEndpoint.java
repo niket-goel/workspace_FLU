@@ -7,10 +7,8 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.datanucleus.query.JPACursorHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -49,10 +47,10 @@ public class EventEndpoint {
 				query.setHint(JPACursorHelper.CURSOR_HINT, cursor);
 			}
 
-			if (limit != null) {
+			/*if (limit != null) {
 				query.setFirstResult(0);
 				query.setMaxResults(limit);
-			}
+			}*/
 
 			execute = (List<Event>) query.getResultList();
 			cursor = JPACursorHelper.getCursor(execute);
@@ -94,9 +92,8 @@ public class EventEndpoint {
 		try {
 			mgr = getEntityManager();
 			//Query query = mgr.createQuery("select from Event as Event");
-			query = mgr.createQuery("SELECT u.eventKey FROM UserEventList u WHERE u.geoHash LIKE '"+geoHashString+"%'");
+			query = mgr.createQuery("SELECT u.eventKey FROM UserEventList u WHERE u.geoHash LIKE :geoHashString");
 			eventsInVicinity = (List<String>) query.getResultList();
-			
 			for (String key : eventsInVicinity)
 			{
 				if(!userEventKeys.contains(key))
@@ -110,7 +107,7 @@ public class EventEndpoint {
 			
 			queryClause = queryClause.substring(0, queryClause.lastIndexOf(","))+" )";
 			
-			query = mgr.createQuery("SELECT from Event as Event WHERE Key IN "+queryClause);
+			query = mgr.createQuery("SELECT DISTINCT e FROM Event e WHERE e.Key IN :eventToReturn");
 			execute = (List<Event>)query.getResultList();
 			if (cursorString != null && cursorString != "") {
 				cursor = Cursor.fromWebSafeString(cursorString);
