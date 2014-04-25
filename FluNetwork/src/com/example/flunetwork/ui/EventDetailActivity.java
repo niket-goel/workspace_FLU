@@ -53,10 +53,6 @@ public class EventDetailActivity extends FragmentActivity{
 		map.setMyLocationEnabled(true);
 
 		eventToDisplay = MyGlobal.currentEvent;
-		/*eventToDisplay.setEventDescription("This is a default description");
-		eventToDisplay.setEventLat(29.6433692 + .01);
-		eventToDisplay.setEventLong(-82.3474775);
-		eventToDisplay.setEventName("Awesome Event");*/
 
 		eventDateTxtVw = (TextView)findViewById(R.id.eventDateTextView);
 		eventTimeTxtVw = (TextView)findViewById(R.id.eventTimeTextView);
@@ -64,7 +60,6 @@ public class EventDetailActivity extends FragmentActivity{
 		eventLocationTxtVw = (TextView)findViewById(R.id.eventLocationTextView);
 		eventDecriptionTxtVw = (TextView)findViewById(R.id.eventDescriptionTextView);
 
-		//currentEvent.setEventTime(new Date());
 
 	}
 
@@ -147,7 +142,7 @@ public class EventDetailActivity extends FragmentActivity{
 		if(eventTime!=null)
 		{
 			timeString = eventTime.toString();
-			timeString = timeString.substring(0, timeString.indexOf("T"));
+			timeString = timeString.substring(timeString.indexOf("T")+1,timeString.lastIndexOf(":"));
 		}
 		else
 		{

@@ -42,7 +42,6 @@
                 android:padding="0dip"
                 android:text="@string/title_activity_add_event"
                 android:textStyle="bold" />
-"
 
             <Button
                 android:id="@+id/eventRefreshButton"

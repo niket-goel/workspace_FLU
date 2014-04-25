@@ -56,7 +56,7 @@ public class AddEventActivity extends Activity implements OnClickListener{
 
 	private static final int SELECT_PICTURE = 1;
 	
-	CustomDateTimePicker custom;
+	CustomDateTimePicker customDateTimeDialog;
 	Event newEvent;
 	Bitmap bmp;
 
@@ -94,7 +94,7 @@ public class AddEventActivity extends Activity implements OnClickListener{
 		eventImageView.setOnClickListener(this);
 		eventLocation.setAdapter(new AutoCompleteAdapter(this));
 
-		custom = new CustomDateTimePicker(this,
+		customDateTimeDialog = new CustomDateTimePicker(this,
 				new CustomDateTimePicker.ICustomDateTimeListener() {
 
 			@Override
@@ -104,12 +104,7 @@ public class AddEventActivity extends Activity implements OnClickListener{
 					String weekDayFullName, String weekDayShortName,
 					int hour24, int hour12, int min, int sec,
 					String AM_PM) {
-				/*setEventTimeBtn
-	                            .setText(calendarSelected
-	                                            .get(Calendar.DAY_OF_MONTH)
-	                                   + "/" + (monthNumber+1) + "/" + year
-	                                    + ", " + hour12 + ":" + min
-	                                    + " " + AM_PM);*/
+				
 				String minutes = String.valueOf(min);
 				if(min<10)
 				{
@@ -134,18 +129,18 @@ public class AddEventActivity extends Activity implements OnClickListener{
 		 * Pass Directly current time format it will return AM and PM if you set
 		 * false
 		 */
-		custom.set24HourFormat(true);
+		customDateTimeDialog.set24HourFormat(true);
 		/**
 		 * Pass Directly current data and time to show when it pop up
 		 */
-		custom.setDate(Calendar.getInstance());
+		customDateTimeDialog.setDate(Calendar.getInstance());
 
 		setEventTimeBtn.setOnClickListener(
 				new OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
-						custom.showDialog();
+						customDateTimeDialog.showDialog();
 					}
 				});
 	}
@@ -183,7 +178,7 @@ public class AddEventActivity extends Activity implements OnClickListener{
 				incompleteFlag = true;
 			}
 			//TODO check the date time is set and is valid.
-			if(custom.isDateSet() == false)
+			if(customDateTimeDialog.isDateSet() == false)
 			{
 				setEventTimeBtn.setTextColor(Color.RED);
 				incompleteFlag = true;
@@ -205,7 +200,7 @@ public class AddEventActivity extends Activity implements OnClickListener{
 			}*/
 			if(incompleteFlag)
 			{
-				Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
 				Toast.makeText(getApplicationContext(), "We know!!! Our programmers are lazy!!!", Toast.LENGTH_SHORT).show();
 			}
 			else 

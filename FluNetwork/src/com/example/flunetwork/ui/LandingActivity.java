@@ -59,7 +59,6 @@ LocationListener{
 	ProgressBar bar;
 
 	long backPressedTime;
-
 	GeoHash geohash;
 
 	@Override

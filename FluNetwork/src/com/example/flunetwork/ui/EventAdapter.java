@@ -76,12 +76,6 @@ public class EventAdapter extends ArrayAdapter<Event> {
 	        	   eventTimeView.setText("Dunno when!");
 	        	   eventDateView.setText(null);
 	           }
-	        	//TODO remove to show description
-	           /*if(EventList.get(position).getEventDescription() != null)
-	        	   eventDescriptionView.setText(EventList.get(position).getEventDescription().toString());
-	           else
-	        	   eventTimeView.setText("That's all we heard about the event!!!");*/
-	           
 	       return convertView;
 	   }
 	   
